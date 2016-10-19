@@ -6,9 +6,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
 
 import static com.jayway.restassured.RestAssured.get;
 public class MyTests {
+    private WebDriver wd;
+        @org.testng.annotations.BeforeClass
+        private void setUp(){
+            System.setProperty("webdriver.chrome.driver", "/home/user/IdeaProjects/ChromeDriver/chromedriver");
+            wd=new ChromeDriver();
+            wd.get("https://qa1-mgstore.gepowerconversion.com/rmstorefront/rm/en/USD/");
+        }
+
+
         @Test
         public void getRequestFindCapital() throws JSONException {
 
@@ -22,6 +34,11 @@ public class MyTests {
 
             // проверка, что столицей является Осло
             AssertJUnit.assertEquals(capital, "Oslo");
+        }
+
+        @org.testng.annotations.AfterClass
+        private void tearDown(){
+            wd.close();
         }
 
 
