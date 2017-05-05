@@ -12,9 +12,14 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.openqa.selenium.WebDriver;
-
-
 import java.util.List;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
@@ -49,6 +54,12 @@ public class MyTests {
 
         @Test
         public static void getSomething() throws JSONException {
+
+            RestTemplate restTemplate=new RestTemplate();
+            CountriesModel countriesModel=new CountriesModel();
+            countriesModel=restTemplate.getForObject("http://restcountries.eu/rest/v1/name/norway", CountriesModel.class);
+
+
             Response resp=get("http://restcountries.eu/rest/v1/name/norway");
             JSONArray jsonResponse=new JSONArray(resp.asString());
             Assert.assertEquals(jsonResponse.getJSONObject(0).get("capital").toString(),"Oslo");
