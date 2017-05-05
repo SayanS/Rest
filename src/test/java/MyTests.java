@@ -1,25 +1,36 @@
 /**
  * Created by user on 28.09.16.
  */
+import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.testng.Assert;
 import org.testng.AssertJUnit;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 
+
+import java.util.List;
 
 import static com.jayway.restassured.RestAssured.get;
+import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.path.json.JsonPath.from;
+import static org.hamcrest.CoreMatchers.containsString;
+
+
 public class MyTests {
     private WebDriver wd;
-        @org.testng.annotations.BeforeClass
+      /*  @BeforeClass
         private void setUp(){
-            System.setProperty("webdriver.chrome.driver", "/home/user/IdeaProjects/ChromeDriver/chromedriver");
+            System.setProperty("webdriver.chrome.driver", "/usr/local/share/chromedriver");
             wd=new ChromeDriver();
             wd.get("https://qa1-mgstore.gepowerconversion.com/rmstorefront/rm/en/USD/");
         }
-
+      */
 
         @Test
         public void getRequestFindCapital() throws JSONException {
@@ -36,7 +47,21 @@ public class MyTests {
             AssertJUnit.assertEquals(capital, "Oslo");
         }
 
-        @org.testng.annotations.AfterClass
+        @Test
+        public static void getSomething() throws JSONException {
+            Response resp=get("http://restcountries.eu/rest/v1/name/norway");
+            JSONArray jsonResponse=new JSONArray(resp.asString());
+            Assert.assertEquals(jsonResponse.getJSONObject(0).get("capital").toString(),"Oslo");
+
+
+            RestAssured.baseURI="http://restcountries.eu/rest/v1/name";
+            String json = get("/no").asString();
+            given().when().get("/norway").then().body(containsString("Oslo"));
+            List<String> capitals = from(json).get("capital");
+
+        }
+
+        @AfterClass
         private void tearDown(){
             wd.close();
         }
